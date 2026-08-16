@@ -30,3 +30,47 @@ Notes grow after each completed phase. Don't edit past sections — append only.
 
 ### Why does `toBe` work for strings but fail for objects with the same content?
 `toBe` uses `===`. Primitives are compared by value — `"Pratik" === "Pratik"` is `true`. Objects are compared by reference (memory address) — two objects with identical content are still two different objects in memory, so `===` returns `false`. Use `toEqual` for deep value comparison of objects and arrays.
+
+---
+
+## 2. Matchers Deep Dive
+
+### Key Concepts
+
+- **`toEqual`** — deep value equality. Ignores `undefined` properties and object class.
+- **`toStrictEqual`** — like `toEqual` but also checks class and treats sparse `undefined` as present.
+- **`toBeTruthy` / `toBeFalsy`** — checks JavaScript truthiness, not strict `true`/`false`. `toBe(true)` fails if the value is `1` or `"hello"`; `toBeTruthy` passes.
+- **`toBeNull`** — checks `=== null` specifically. Not interchangeable with `toBeUndefined`.
+- **`toBeUndefined` / `toBeDefined`** — checks `=== undefined` and the opposite.
+- **`toContain`** — array contains a primitive value, or string contains a substring. Does not do deep equality on objects inside arrays (use `toContainEqual` for that).
+- **`toHaveLength`** — checks `.length` property on arrays or strings.
+- **`toMatchObject`** — partial object match. Passes if required keys/values are present, ignores extra keys.
+- **`toThrow`** — must wrap the call in an arrow function. `expect(() => fn()).toThrow()`. Direct call `expect(fn())` crashes the test because the throw happens before `expect` receives anything.
+- **Randomness in tests** — avoid random values in test data. Tests should be deterministic — same input, same output, every run.
+- **Dividing by zero in JS** — returns `Infinity`, does not throw. Must explicitly guard with `if (y === 0) throw new Error(...)`.
+
+### APIs Learned
+
+| API | What it does |
+|-----|-------------|
+| `toEqual(value)` | Deep value equality, ignores `undefined` and class |
+| `toStrictEqual(value)` | Deep value equality, checks class and sparse `undefined` |
+| `toBeTruthy()` | Passes for any truthy value |
+| `toBeFalsy()` | Passes for any falsy value |
+| `toBeNull()` | Passes only for `null` |
+| `toBeUndefined()` | Passes only for `undefined` |
+| `toBeDefined()` | Passes for anything that is not `undefined` |
+| `toContain(item)` | Array contains primitive, or string contains substring |
+| `toHaveLength(n)` | `.length` equals `n` |
+| `toMatchObject(obj)` | Object contains at least the given keys/values |
+| `toThrow(message?)` | Function throws, optionally matching error message |
+
+---
+
+## Q&A
+
+### Why must `toThrow` be wrapped in an arrow function?
+`expect(fn())` evaluates `fn()` immediately — if it throws, the error propagates before `expect` is called and the test crashes. Wrapping in `() => fn()` passes a reference; Vitest calls it inside a try/catch and checks the result.
+
+### What's the difference between `toContain` and `toMatchObject`?
+`toContain` checks if an array includes a primitive value or a string includes a substring. `toMatchObject` checks if an object has at least the specified keys and values — extra keys are ignored. For checking if an array of objects contains one matching a shape, use `toContainEqual`.

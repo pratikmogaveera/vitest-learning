@@ -36,7 +36,9 @@ vitest-learning/
 │   ├── phase-1/
 │   │   ├── utils.ts            — pure utility functions
 │   │   └── utils.test.ts       — unit tests for utils
-│   ├── phase-2/            — matchers deep dive
+│   ├── phase-2/
+│   │   ├── matchers.ts         — functions returning objects, arrays, nullable values
+│   │   └── matchers.test.ts    — tests for all major matchers
 │   ├── phase-3/            — async testing
 │   ├── phase-4/            — mocking (vi.fn, vi.spyOn, vi.mock)
 │   ├── phase-5/            — modules and dependency injection testing
@@ -53,7 +55,7 @@ vitest-learning/
 ## Progress
 
 - [x] Phase 1 — Setup & Basic Unit Tests
-- [ ] Phase 2 — Matchers Deep Dive
+- [x] Phase 2 — Matchers Deep Dive
 - [ ] Phase 3 — Async Testing
 - [ ] Phase 4 — Mocking Fundamentals
 - [ ] Phase 5 — Module Mocking & Dependency Patterns
