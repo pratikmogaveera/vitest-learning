@@ -1,0 +1,22 @@
+{
+  "name": "vitest-learning",
+  "version": "1.0.0",
+  "description": "Hands-on Vitest learning project — unit testing, async, mocking, coverage, and integration testing",
+  "scripts": {
+    "test": "vitest"
+  },
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.11.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

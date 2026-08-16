@@ -33,7 +33,9 @@ pnpm vitest --watch
 ```
 vitest-learning/
 ├── src/
-│   ├── phase-1/            — basic unit tests (math, strings, booleans)
+│   ├── phase-1/
+│   │   ├── utils.ts            — pure utility functions
+│   │   └── utils.test.ts       — unit tests for utils
 │   ├── phase-2/            — matchers deep dive
 │   ├── phase-3/            — async testing
 │   ├── phase-4/            — mocking (vi.fn, vi.spyOn, vi.mock)
@@ -42,6 +44,7 @@ vitest-learning/
 │   ├── phase-7/            — integration testing (Drizzle + real Postgres)
 │   └── phase-8/            — React component testing (Testing Library)
 ├── package.json            — project config and vitest dependency
+├── tsconfig.json           — TypeScript configuration
 ├── vitest.config.ts        — vitest configuration
 ├── PLAN.md                 — learning roadmap
 └── NOTES.md                — concepts and Q&A
@@ -49,7 +52,7 @@ vitest-learning/
 
 ## Progress
 
-- [ ] Phase 1 — Setup & Basic Unit Tests
+- [x] Phase 1 — Setup & Basic Unit Tests
 - [ ] Phase 2 — Matchers Deep Dive
 - [ ] Phase 3 — Async Testing
 - [ ] Phase 4 — Mocking Fundamentals
