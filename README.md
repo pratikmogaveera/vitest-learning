@@ -16,16 +16,16 @@ Build a solid foundation in unit testing, mocking, async testing, and coverage â
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Run tests
-npx vitest
+pnpm vitest
 
 # Run tests with coverage
-npx vitest --coverage
+pnpm vitest --coverage
 
 # Run tests in watch mode
-npx vitest --watch
+pnpm vitest --watch
 ```
 
 ## File Structure

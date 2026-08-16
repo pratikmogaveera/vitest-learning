@@ -20,7 +20,7 @@ Learn testing from scratch using Vitest, starting from the simplest unit test an
 - Difference between `it` and `test`
 - What is a pure function and why is it the easiest thing to test?
 
-**Done when:** 5+ passing tests for simple utility functions, run with `npx vitest`.
+**Done when:** 5+ passing tests for simple utility functions, run with `pnpm vitest`.
 
 ---
 
