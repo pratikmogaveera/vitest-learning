@@ -39,7 +39,9 @@ vitest-learning/
 │   ├── phase-2/
 │   │   ├── matchers.ts         — functions returning objects, arrays, nullable values
 │   │   └── matchers.test.ts    — tests for all major matchers
-│   ├── phase-3/            — async testing
+│   ├── phase-3/
+│   │   ├── async.ts            — async functions (getUser, delay)
+│   │   └── async.test.ts       — async/await, .resolves, .rejects, legacy pattern
 │   ├── phase-4/            — mocking (vi.fn, vi.spyOn, vi.mock)
 │   ├── phase-5/            — modules and dependency injection testing
 │   ├── phase-6/            — coverage, edge cases, real-world patterns
@@ -56,7 +58,7 @@ vitest-learning/
 
 - [x] Phase 1 — Setup & Basic Unit Tests
 - [x] Phase 2 — Matchers Deep Dive
-- [ ] Phase 3 — Async Testing
+- [x] Phase 3 — Async Testing
 - [ ] Phase 4 — Mocking Fundamentals
 - [ ] Phase 5 — Module Mocking & Dependency Patterns
 - [ ] Phase 6 — Coverage, Edge Cases & Real-World Patterns

@@ -30,7 +30,7 @@ export const checkMatchingObject = () => {
 };
 
 export const getUser = (id: number) => {
-  const db: Record<number, string> = { 1: 'Pratik' };
+  const db: Record<number, string> = { 1: 'John Doe' };
   return db[id];
 };
 

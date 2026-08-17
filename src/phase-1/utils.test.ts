@@ -32,7 +32,7 @@ describe('Pure Functions', () => {
   });
 
   it('returns capitalized string', () => {
-    const result = capitalize('pratik');
-    expect(result).toBe('Pratik');
+    const result = capitalize('john');
+    expect(result).toBe('John');
   });
 });
