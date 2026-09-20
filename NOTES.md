@@ -113,3 +113,65 @@ The assertion is never evaluated — Vitest considers the test done after the sy
 ### Why does `expect(promise).toBeTruthy()` always pass?
 
 A `Promise` object is truthy regardless of its state. The assertion runs synchronously against the Promise object itself, not its resolved value. Always `await` before asserting.
+
+
+---
+
+## 4. Mocking Fundamentals
+
+### Key Concepts
+
+- **Why mocking exists** — isolate the unit under test. You test what your code *does* with a dependency, not whether the dependency itself works.
+- **`vi.fn()`** — creates a standalone fake function from nothing. Use when the dependency is injected (passed as a parameter). No original exists — you built it.
+- **`vi.spyOn(obj, 'method')`** — wraps a function that already exists on an object. The original is preserved and callable unless you override with `.mockReturnValue()`. Use when the code under test reaches into an object/module directly.
+- **`.mockReturnValue(val)`** — overrides what the mock returns. The original function body never runs. The spy still records the call.
+- **`.mockResolvedValue(val)`** — same as `mockReturnValue` but wraps the value in a resolved Promise. Use for async functions.
+- **Default return value** — `vi.fn()` returns `undefined` by default. Always set a return value if your code uses the result.
+- **Where to set `mockReturnValue`** — set it inside the test that needs it, not at definition level. Keeps tests self-contained and avoids relying on mock state surviving cleanup.
+- **`vi.clearAllMocks()`** — resets call history only (calls, args, results). Mock implementations set via `mockReturnValue` survive. Use when you want call records wiped but return values to persist.
+- **`vi.resetAllMocks()`** — resets call history AND removes mock implementations (`mockReturnValue`, `mockImplementation`, etc.). Use when you don't want any return value leaking between tests.
+- **`vi.restoreAllMocks()`** — everything `resetAllMocks` does, plus restores `vi.spyOn` mocks to their original implementation.
+
+### `vi.fn()` vs `vi.spyOn()` — when to use which
+
+| How code accesses the function | Tool |
+|---|---|
+| Injected as a parameter | `vi.fn()` |
+| Pulled from an object/module directly | `vi.spyOn()` |
+
+### APIs Learned
+
+| API | What it does |
+|---|---|
+| `vi.fn()` | Creates a standalone mock function |
+| `vi.spyOn(obj, 'method')` | Wraps an existing method with a spy |
+| `mockReturnValue(val)` | Sets return value for all future calls |
+| `mockReturnValueOnce(val)` | Sets return value for the next call only |
+| `mockResolvedValue(val)` | Sets resolved Promise return value |
+| `toHaveBeenCalled()` | Assert mock was called at least once |
+| `toHaveBeenCalledOnce()` | Assert mock was called exactly once |
+| `toHaveBeenCalledWith(...args)` | Assert mock was called with specific args |
+| `toHaveReturnedWith(val)` | Assert mock returned a specific value |
+| `vi.clearAllMocks()` | Clears call history (and implementations in v4) |
+| `vi.resetAllMocks()` | Clears call history + implementations |
+| `vi.restoreAllMocks()` | Resets + restores spyOn originals |
+
+---
+
+## Q&A
+
+### What's the difference between `vi.fn()` and `vi.spyOn()`?
+
+`vi.fn()` creates a fake from nothing — no original exists. You inject it. `vi.spyOn()` wraps something that already exists on an object, intercepting calls to it. The key difference is where the function lives: if it's injected, use `vi.fn()`. If it lives on an object the code imports directly, use `vi.spyOn()`.
+
+### Does `.mockReturnValue()` stop the original function from running?
+
+Yes. Once you attach `.mockReturnValue()`, the original body never executes. The mock intercepts the call and returns your value. The spy still records that the call happened.
+
+### What's the difference between `clearAllMocks`, `resetAllMocks`, and `restoreAllMocks`?
+
+`clearAllMocks` wipes call history only — `mockReturnValue` implementations survive. `resetAllMocks` wipes call history AND removes mock implementations. `restoreAllMocks` does both and additionally puts `vi.spyOn` mocks back to their original implementation.
+
+### Why set `mockReturnValue` inside the test rather than at definition level?
+
+Because `resetAllMocks` (or `clearAllMocks` in v4) in `beforeEach` will wipe it before the test runs. Setting it inside the test means it's applied after cleanup — guaranteed to be in effect. It also keeps the test self-contained: you understand it without looking elsewhere.

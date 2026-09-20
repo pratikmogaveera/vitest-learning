@@ -59,7 +59,7 @@ vitest-learning/
 - [x] Phase 1 — Setup & Basic Unit Tests
 - [x] Phase 2 — Matchers Deep Dive
 - [x] Phase 3 — Async Testing
-- [ ] Phase 4 — Mocking Fundamentals
+- [x] Phase 4 — Mocking Fundamentals
 - [ ] Phase 5 — Module Mocking & Dependency Patterns
 - [ ] Phase 6 — Coverage, Edge Cases & Real-World Patterns
 - [ ] Phase 7 — Integration Testing (Drizzle + Postgres)
