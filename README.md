@@ -42,7 +42,9 @@ vitest-learning/
 │   ├── phase-3/
 │   │   ├── async.ts            — async functions (getUser, delay)
 │   │   └── async.test.ts       — async/await, .resolves, .rejects, legacy pattern
-│   ├── phase-4/            — mocking (vi.fn, vi.spyOn, vi.mock)
+│   ├── phase-4/
+│   │   ├── notifier.ts         — user notifier with injected sendEmail dependency
+│   │   └── notifier.test.ts    — mocking with vi.fn(), call assertions, mockReturnValue
 │   ├── phase-5/            — modules and dependency injection testing
 │   ├── phase-6/            — coverage, edge cases, real-world patterns
 │   ├── phase-7/            — integration testing (Drizzle + real Postgres)
