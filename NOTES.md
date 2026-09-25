@@ -175,3 +175,48 @@ Yes. Once you attach `.mockReturnValue()`, the original body never executes. The
 ### Why set `mockReturnValue` inside the test rather than at definition level?
 
 Because `resetAllMocks` (or `clearAllMocks` in v4) in `beforeEach` will wipe it before the test runs. Setting it inside the test means it's applied after cleanup — guaranteed to be in effect. It also keeps the test self-contained: you understand it without looking elsewhere.
+
+
+---
+
+## 5. Module Mocking & Dependency Patterns
+
+### Key Concepts
+
+- **`vi.mock('module-name')`** — replaces an entire module for the duration of the test file. Every import of that module gets the mock instead of the real thing.
+- **Hoisting** — `vi.mock` calls are hoisted to the top of the file at compile time, before any imports. This is why the mock is in effect when the module is first imported.
+- **Factory function** — the second argument to `vi.mock`. Defines exactly what the mocked module exports. Without it, Vitest auto-mocks (every export becomes `vi.fn()` returning `undefined`). Use a factory when the module has a specific shape your code depends on (e.g. `axios.get`, nested default exports).
+- **`default` in factory** — when mocking a default-exported module (e.g. `import axios from 'axios'`), the factory must return `{ default: { ... } }` to match the import shape.
+- **Named exports in factory** — when mocking named exports (e.g. `import { readFileSync } from 'fs'`), the factory returns a flat object with those keys: `{ readFileSync: vi.fn() }`. No `default` wrapper needed.
+- **`vi.mocked(fn)`** — casts a mocked function to Vitest's `MockedFunction` type, giving TypeScript access to mock-specific methods like `.mockReturnValue`, `.mockResolvedValue`, `.mockImplementation`.
+- **Mocks are inputs, assertions are on your code** — when you mock a function to throw, you're setting up the scenario, not testing the mock. The assertion is whether your code handles or propagates that error correctly.
+- **Dependency Injection (DI)** — when a class accepts dependencies via the constructor, no `vi.mock` is needed. Pass a `vi.fn()` directly. The class depends on a shape (interface), not a concrete implementation — so any object satisfying the interface works, including plain test objects.
+- **Interface over class for DI** — define an `interface` for the dependency type, not a concrete class. In tests, pass `{ method: vi.fn() }` directly — no instantiation needed.
+- **AAA in each test** — `beforeEach` should only handle cleanup (`vi.resetAllMocks()`). Arrange and Act belong inside each test so it's self-contained and readable without context from outside.
+- **`"node"` in tsconfig `types`** — the `types` array is an allowlist. Adding `"vitest/globals"` suppresses auto-discovery of `@types/node`. Add `"node"` explicitly to restore Node.js built-in type definitions.
+
+### APIs Learned
+
+| API | What it does |
+|---|---|
+| `vi.mock('module', factory)` | Replaces a module with the factory's return value for this file |
+| `vi.mocked(fn)` | Casts a function to `MockedFunction` for typed mock access |
+| `.mockImplementation(fn)` | Replaces the mock's implementation with a custom function |
+| `.mockResolvedValue(val)` | Mock returns a resolved Promise with value |
+| `.mockRejectedValue(err)` | Mock returns a rejected Promise with error |
+
+---
+
+## Q&A
+
+### Why does `vi.mock` need a factory for axios but not for a simple module?
+
+Without a factory, Vitest auto-mocks — every export becomes a `vi.fn()`. For a flat module that works fine. But `axios` is a default export with nested methods (`axios.get`, `axios.post`). Auto-mock doesn't recreate that structure, so `axios.get` would be `undefined`. The factory lets you define the exact shape your code expects.
+
+### What's the difference between mocking a module and using DI?
+
+Module mocking (`vi.mock`) intercepts imports — your code reaches out for a dependency and gets the mock instead. DI flips it: the dependency is passed in from outside, so there's nothing to intercept. Tests just hand the class a fake object. DI is simpler to test and more explicit about dependencies.
+
+### Why use an interface instead of a class for the injected dependency type?
+
+A class couples your code to a specific implementation. An interface only defines a shape — any object satisfying it works. In tests, `{ send: vi.fn() }` satisfies `IEmailClient` without importing or instantiating anything. In production, you pass the real `EmailClient`. Same code, different objects.

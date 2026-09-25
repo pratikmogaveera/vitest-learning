@@ -45,7 +45,13 @@ vitest-learning/
 │   ├── phase-4/
 │   │   ├── notifier.ts         — user notifier with injected sendEmail dependency
 │   │   └── notifier.test.ts    — mocking with vi.fn(), call assertions, mockReturnValue
-│   ├── phase-5/            — modules and dependency injection testing
+│   ├── phase-5/
+│   │   ├── fetcher.ts              — async function using axios
+│   │   ├── fetcher.test.ts         — mocking axios (default export with factory)
+│   │   ├── file-reader.ts          — function using fs.readFileSync
+│   │   ├── file-reader.test.ts     — mocking built-in fs module
+│   │   ├── notifier-service.ts     — NotifierService class with IEmailClient interface
+│   │   └── notifier-service.test.ts — DI testing with vi.fn() injected directly
 │   ├── phase-6/            — coverage, edge cases, real-world patterns
 │   ├── phase-7/            — integration testing (Drizzle + real Postgres)
 │   └── phase-8/            — React component testing (Testing Library)
@@ -62,7 +68,7 @@ vitest-learning/
 - [x] Phase 2 — Matchers Deep Dive
 - [x] Phase 3 — Async Testing
 - [x] Phase 4 — Mocking Fundamentals
-- [ ] Phase 5 — Module Mocking & Dependency Patterns
+- [x] Phase 5 — Module Mocking & Dependency Patterns
 - [ ] Phase 6 — Coverage, Edge Cases & Real-World Patterns
 - [ ] Phase 7 — Integration Testing (Drizzle + Postgres)
 - [ ] Phase 8 — Frontend Component Testing (React + Testing Library)
