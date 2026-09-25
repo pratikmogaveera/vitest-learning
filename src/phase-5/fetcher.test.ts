@@ -13,11 +13,6 @@ beforeEach(() => {
 });
 
 describe('Testing with mock modules', () => {
-  it('resolves successfully', async () => {
-    vi.mocked(axios.get).mockResolvedValue({ data: mockUser });
-    await expect(getUserByUserId(1)).resolves.toBeTruthy();
-  });
-
   it("checks if response contains requested user's data", async () => {
     vi.mocked(axios.get).mockResolvedValue({ data: mockUser });
     await expect(getUserByUserId(1)).resolves.toMatchObject({ id: 1 });

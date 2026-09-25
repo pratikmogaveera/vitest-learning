@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "types": [
+      "node",
       "vitest/globals"
     ]
   },
