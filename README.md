@@ -64,6 +64,8 @@ vitest-learning/
 │   │   └── migrations/
 │   │       └── 0000_narrow_unus.sql — generated migration for users table
 │   └── phase-8/            — React component testing (Testing Library)
+├── docker-compose.yml      — Postgres container for integration tests
+├── drizzle.config.ts       — Drizzle Kit configuration
 ├── package.json            — project config and vitest dependency
 ├── tsconfig.json           — TypeScript configuration
 ├── vitest.config.ts        — vitest configuration
