@@ -6,6 +6,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',
+      exclude: ['./src/phase-7/db.ts'],
     },
   },
 });
