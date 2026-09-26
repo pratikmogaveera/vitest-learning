@@ -52,7 +52,10 @@ vitest-learning/
 │   │   ├── file-reader.test.ts     — mocking built-in fs module
 │   │   ├── notifier-service.ts     — NotifierService class with IEmailClient interface
 │   │   └── notifier-service.test.ts — DI testing with vi.fn() injected directly
-│   ├── phase-6/            — coverage, edge cases, real-world patterns
+│   ├── phase-6/
+│   │   ├── matchers.test.ts        — test.each for divide() with parametrized cases
+│   │   ├── sip-calculator.ts       — SIP maturity calculator with validations
+│   │   └── sip-calculator.test.ts  — edge cases, throws, test.each happy path
 │   ├── phase-7/            — integration testing (Drizzle + real Postgres)
 │   └── phase-8/            — React component testing (Testing Library)
 ├── package.json            — project config and vitest dependency
@@ -69,7 +72,7 @@ vitest-learning/
 - [x] Phase 3 — Async Testing
 - [x] Phase 4 — Mocking Fundamentals
 - [x] Phase 5 — Module Mocking & Dependency Patterns
-- [ ] Phase 6 — Coverage, Edge Cases & Real-World Patterns
+- [x] Phase 6 — Coverage, Edge Cases & Real-World Patterns
 - [ ] Phase 7 — Integration Testing (Drizzle + Postgres)
 - [ ] Phase 8 — Frontend Component Testing (React + Testing Library)
 - [ ] Bridge — Migrating to Jest (NestJS context)

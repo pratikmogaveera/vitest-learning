@@ -1,4 +1,4 @@
-import { notifyUser } from './notifier';
+import { notifyUser, sendEmail } from './notifier';
 
 const mockEmailAndMessage = { email: 'mock@email.com', message: 'Hello Mock User, your account is ready.' };
 const mockUser = { id: 1, name: 'Mock User', email: 'mock@email.com' };
@@ -11,6 +11,14 @@ beforeEach(() => {
 });
 
 describe('Testing with mock functions', () => {
+  it('checks if `sendEmail` returns correct response', () => {
+    const response = sendEmail(mockEmailAndMessage.email, mockEmailAndMessage.message);
+    expect(response).toEqual({
+      success: true,
+      ...mockEmailAndMessage,
+    });
+  });
+
   it('checks if `sendEmail` was called exactly once', () => {
     expect(mockSendEmail).toHaveBeenCalledOnce();
   });

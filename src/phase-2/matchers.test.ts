@@ -51,6 +51,11 @@ describe('Array and Object', () => {
     });
   });
 
+  it('checks if correct values divide correctly', () => {
+    const response = divide(4, 2);
+    expect(response).toBe(2);
+  });
+
   it('checks if denominator 0 in division throws', () => {
     expect(() => divide(1, 0)).toThrow('Cannot divide by 0');
   });

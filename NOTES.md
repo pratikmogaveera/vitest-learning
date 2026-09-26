@@ -220,3 +220,47 @@ Module mocking (`vi.mock`) intercepts imports — your code reaches out for a de
 ### Why use an interface instead of a class for the injected dependency type?
 
 A class couples your code to a specific implementation. An interface only defines a shape — any object satisfying it works. In tests, `{ send: vi.fn() }` satisfies `IEmailClient` without importing or instantiating anything. In production, you pass the real `EmailClient`. Same code, different objects.
+
+
+---
+
+## 6. Coverage, Edge Cases & Real-World Patterns
+
+### Key Concepts
+
+- **Coverage metrics** — four dimensions: Statements (executable lines hit), Branches (every if/else/ternary path), Functions (every function called), Lines (every line executed). Branch coverage is the most meaningful — a function can have 100% line coverage but miss an entire `else` path.
+- **100% coverage does not guarantee correctness** — you can execute every line and still have wrong assertions, missing edge cases, or tests that don't actually assert anything useful. Coverage is a signal, not proof.
+- **Coverage gaps from mocking are expected** — when you mock a function, the real implementation doesn't run. That gap is intentional, not a missing test. Only add a direct test for the real implementation if it has logic worth verifying independently.
+- **`test.each` — array syntax** — pass an array of arrays, use `%i`/`%s`/`%f` printf placeholders in the test name. Each sub-array is one test case.
+- **`test.each` — object syntax** — pass an array of objects, use `$key` in the test name. More readable for multi-parameter cases. Destructure the object in the test function.
+- **Get expected values from the function, not manual calculation** — once the formula is verified against a ground truth (e.g. Groww's calculator), run the function to generate expected values. Hardcoding manually-calculated values introduces rounding errors.
+- **Edge cases to always consider** — zero inputs, negative inputs, division by zero, boundary values (exactly at the minimum/maximum), type coercion.
+- **Zero rate edge case** — when a rate is 0, formulas that divide by the rate produce `NaN`. Handle it explicitly with a special case before the formula runs.
+- **Business rules vs math rules** — a minimum SIP amount (₹500) is a product constraint, not a mathematical one. Both types warrant tests, but they fail for different reasons.
+
+### APIs Learned
+
+| API | What it does |
+|---|---|
+| `test.each([...])('name', fn)` | Runs the same test for each row of data |
+| `%i`, `%s`, `%f` | Printf placeholders for array syntax test names |
+| `$key` | Object key reference for object syntax test names |
+| `pnpm vitest --coverage --run` | Runs tests once with coverage report |
+| `coverage.provider: 'v8'` | Uses V8's built-in coverage engine |
+| `coverage.reportsDirectory` | Where coverage output files are written |
+
+---
+
+## Q&A
+
+### Why is branch coverage more important than line coverage?
+
+A single line can contain multiple branches. `return score >= 50 ? 'pass' : 'fail'` is one line but two branches. Line coverage marks it executed after one test — branch coverage requires both paths to be hit. Missing branches means untested logic paths that could fail in production.
+
+### When should you not chase 100% coverage?
+
+When the gap is caused by intentional mocking (the real implementation shouldn't run in that test), when the code is trivial boilerplate with no logic, or when the cost of the test exceeds its value. Coverage is a tool, not a goal.
+
+### Why use `test.each` instead of multiple `it` blocks?
+
+Repetitive `it` blocks hide the pattern — the data and the test logic are tangled together. `test.each` separates them: the data table makes the cases explicit and scannable, and the test logic is written once. Adding a new case is a one-line change to the data array.
