@@ -264,3 +264,50 @@ When the gap is caused by intentional mocking (the real implementation shouldn't
 ### Why use `test.each` instead of multiple `it` blocks?
 
 Repetitive `it` blocks hide the pattern — the data and the test logic are tangled together. `test.each` separates them: the data table makes the cases explicit and scannable, and the test logic is written once. Adding a new case is a one-line change to the data array.
+
+
+---
+
+## 7. Integration Testing (Drizzle + Postgres)
+
+### Key Concepts
+
+- **Unit test vs integration test** — unit tests mock dependencies and test code in isolation. Integration tests use real infrastructure (DB, network) and test how components work together. They catch bugs unit tests can't: schema errors, constraint violations, query bugs.
+- **Test database isolation** — never run integration tests against a production or shared DB. Use a dedicated database (or container) that can be wiped freely.
+- **`beforeEach` TRUNCATE** — each test must start with a clean table. Truncating in `beforeEach` ensures no data leaks between tests. Tests run in any order and produce the same result.
+- **Self-contained tests** — each test creates its own data. No shared mutable state (`let userId` shared across tests). If one test fails, others are unaffected.
+- **`afterAll` — close the connection** — the postgres client keeps open connections. If not closed, Vitest hangs after tests finish waiting for them to drain. Always call `queryClient.end()` in `afterAll`.
+- **Programmatic migrations** — instead of running `drizzle-kit migrate` manually, use `migrate(db, { migrationsFolder })` from `drizzle-orm/postgres-js/migrator` inside `beforeAll`. Anyone running tests gets migrations applied automatically.
+- **Drizzle `.returning()`** — by default Drizzle's `insert` and `delete` don't return the affected rows. Chain `.returning({ col: table.col })` to get them back in the same query.
+- **`db.execute(sql)`** — runs raw SQL. Used here for `TRUNCATE TABLE users` since Drizzle doesn't have a built-in truncate method.
+- **Named volume for persistence** — Docker named volumes persist data between container restarts. Use `docker compose down -v` to wipe both the container and the volume when you want a clean slate.
+- **Drizzle migrator notices** — "schema already exists, skipping" notices are harmless. The migrator creates its internal tracking table on every run; Postgres skips creation if it already exists.
+
+### APIs Learned
+
+| API | What it does |
+|---|---|
+| `db.insert(table).values({}).returning({})` | Insert a row and return specified columns |
+| `db.select().from(table).where(eq(col, val))` | Select rows matching a condition |
+| `db.delete(table).where(eq(col, val)).returning({})` | Delete rows and return specified columns |
+| `db.execute(sql)` | Run raw SQL string |
+| `migrate(db, { migrationsFolder })` | Apply pending migrations programmatically |
+| `queryClient.end()` | Close all postgres connections |
+| `pnpm drizzle-kit generate` | Generate SQL migration from schema diff |
+| `pnpm drizzle-kit migrate` | Apply pending migrations to the DB |
+
+---
+
+## Q&A
+
+### Why use `beforeEach` for TRUNCATE instead of `beforeAll`?
+
+`beforeAll` runs once before the entire suite — data created in test 1 is still there when test 2 runs. `beforeEach` runs before every test, guaranteeing a clean slate each time. Tests become order-independent: you can run them in any sequence and get the same result.
+
+### Why not mock the database in integration tests?
+
+Mocking the DB in unit tests verifies your application logic. But mocks don't catch real problems: a wrong column name, a missing constraint, a query that returns the wrong shape, a migration that doesn't match the schema. Integration tests against a real DB catch all of that.
+
+### What's the difference between `drizzle-kit migrate` and the programmatic migrator?
+
+`drizzle-kit migrate` is a CLI command you run manually. The programmatic `migrate()` function runs inside your test suite's `beforeAll` — anyone who clones the repo and runs tests gets migrations applied automatically without needing to remember the CLI command.
